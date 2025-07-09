@@ -1,4 +1,4 @@
-### ACTIVIDAD MySQL
+# ACTIVIDAD MySQL
 
 Entrega MARKDOWN
 Pasarlo con PROCEDIMIENTOS Y EVENT0S
@@ -16,7 +16,7 @@ total_ingresos DECIMAL(12,2),
 creado_en DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
-
+```bash
 CREATE TABLE IF NOT EXISTS alerta_stock (
   id              INT AUTO_INCREMENT PRIMARY KEY,
   ingrediente_id  INT UNSIGNED NOT NULL,
@@ -25,9 +25,10 @@ CREATE TABLE IF NOT EXISTS alerta_stock (
   creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (ingrediente_id) REFERENCES ingrediente(id)
 );
+```
 
 ## Creacion de tabla ingrediente:
-
+```bash
 CREATE TABLE IF NOT EXISTS ingrediente (
   id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre          VARCHAR(100) NOT NULL,
@@ -40,23 +41,25 @@ CREATE TABLE IF NOT EXISTS ingrediente (
   fecha_caducidad DATE,
   creado_en       DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
+```
 ## Creacion tabla ventas (para resumen_ventas)
-
+```bash
 CREATE TABLE IF NOT EXISTS ventas (
   id              INT AUTO_INCREMENT PRIMARY KEY,
   fecha_venta     DATETIME NOT NULL,
   total           DECIMAL(12,2) NOT NULL,
   creado_en       DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
+```
+## Creacion log_eventos (para eventos eliminados)
+```bash
 CREATE TABLE IF NOT EXISTS log_eventos (
   id              INT AUTO_INCREMENT PRIMARY KEY,
   nombre_evento   VARCHAR(100),
   descripcion     TEXT,
   ejecutado_en    DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
+```
 
 ### Puntos:
 
@@ -78,6 +81,8 @@ CREATE TABLE IF NOT EXISTS log_eventos (
 -------------------------------
 Solucion Procedimiento:
 -----------------------------
+
+```bash
 DELIMITER //
 
 CREATE EVENT ev_resumen_diario_unico
@@ -95,12 +100,12 @@ WHERE DATE(fecha_venta) = CURDATE() - INTERVAL 1 DAY;
 END //
 
 DELIMITER ; 
-
+```
 -----------------------------------------------------------
 ### Mostrar el evento:
-
+```bash
 SHOW CREATE EVENT ev_resumen_diario_unico;
-
+```
 -----------------------------------------------------------
 
 ------------------------------------///////////////////----------------------------------------------
@@ -110,7 +115,7 @@ SHOW CREATE EVENT ev_resumen_diario_unico;
 -------------------------------
 Solucion Procedimiento:
 ---------------------------------------
-
+```bash
 DELIMITER //
 
 CREATE EVENT ev_resumen_semanal
@@ -132,14 +137,15 @@ BEGIN
 END //
 
 DELIMITER ;
+```
 
-Explicacion: Tuve un dilema/duda, debido a que el primer punto pedia diariamente hacerlo, y el otro semanalmente, al tratar de hacerlo tuve que utilizar el STARTS para indicar la fecha en la que empezaria a correr, en este caso, el Lunes 14.
+##### Explicacion: Tuve un dilema/duda, debido a que el primer punto pedia diariamente hacerlo, y el otro semanalmente, al tratar de hacerlo tuve que utilizar el STARTS para indicar la fecha en la que empezaria a correr, en este caso, el Lunes 14.
 
 ------------------------------------------------------------------------------------------------------
 ### Mostrar el evento:
-
+```bash
 SHOW CREATE EVENT ev_resumen_semanal;
-
+```
 --------------------------------------------///////////////-------------------------------------------
 
 
@@ -148,7 +154,7 @@ SHOW CREATE EVENT ev_resumen_semanal;
 -------------------------------
 Solucion Procedimiento:
 ---------------------------------------
-
+```bash
 DELIMITER //
 
 CREATE EVENT ev_alerta_stock
@@ -169,11 +175,12 @@ BEGIN
 END //
 
 DELIMITER ;
-
+```
 ------------------------------------
 ### Mostrar evento eliminado:
-
+```bash
 SELECT id, nombre_evento, descripcion, ejecutado_en FROM log_eventos;
+```
 ------------------------------------
 
 #### |----- Punto 4 -----|
@@ -181,7 +188,7 @@ SELECT id, nombre_evento, descripcion, ejecutado_en FROM log_eventos;
 -------------------------------
 Solucion Procedimiento:
 ---------------------------------------
-
+```bash
 DELIMITER //
 
 CREATE EVENT ev_monitor_stock_bajo
@@ -197,13 +204,13 @@ BEGIN
 END //
 
 DELIMITER ;
-
+```
 -----------------------------------
 ### Ver el evento:
 ----------------------------------
-
+```bash
 SHOW CREATE EVENT ev_monitor_stock_bajo;
-
+```
 
 ------------------------------------------
 
@@ -213,7 +220,7 @@ SHOW CREATE EVENT ev_monitor_stock_bajo;
 -------------------------------
 Solucion Procedimiento:
 ---------------------------------------
-
+```bash
 DELIMITER //
 
 CREATE EVENT ev_purgar_resumen_antiguo
@@ -232,13 +239,13 @@ BEGIN
 END //
 
 DELIMITER ;
-
+```
 -----------------------------------
 ### Ver el evento:
 ----------------------------------
-
+```bash
 SELECT id, nombre_evento, descripcion, ejecutado_en FROM log_eventos WHERE nombre_evento = 'ev_purgar_resumen_antiguo';
-
+```
 
 
 
