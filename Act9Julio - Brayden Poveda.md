@@ -8,12 +8,14 @@ Haciendo uso de las siguientes tablas para la base de datos de pizza realice los
 
 ### Tablas:
 
+```bash
 CREATE TABLE IF NOT EXISTS resumen_ventas (
 fecha       DATE      PRIMARY KEY,
 total_pedidos INT,
 total_ingresos DECIMAL(12,2),
 creado_en DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+```
 
 CREATE TABLE IF NOT EXISTS alerta_stock (
   id              INT AUTO_INCREMENT PRIMARY KEY,
